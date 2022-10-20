@@ -82,33 +82,70 @@ impl Board {
   }
 
   pub fn print_board(&self) {
-      // print column numbers
-        print!("   ");
+      // the board should be printed like this:
+      /*
+           1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+           -----------------------------------
+        1|
+        2|
+        3|
+        4|
+        5|
+        6|
+        7|
+        8|
+        9|
+       10|
+       11|
+       12|
+       13|
+       14|
+       15|   
+      */
+        // print the prepending spaces
+        for _ in 0..self.height.to_string().len() {
+            print!(" ");
+        }
+        print!(" ");
+        let mut string = String::new();
         for x in 0..self.width {
-            print!("{} ", x);
+            string.push_str(&format!("{} ", x));
+        }
+        println!("{}", string);
+
+        // print the horizontal line
+        for _ in 0..self.height.to_string().len() {
+            print!(" ");
+        }
+        print!(" ");
+        for _ in 0..string.len() - 1 {
+            print!("-");
         }
         println!();
 
-        print!("   ");
-        for x in 0..self.width {
-            print!("--");
-        }
-        println!();
-    // print board with row numbers (place a line between row numbers and board)
+        // print the board with the numbers
         for y in 0..self.height {
-            print!("{}| ", y);
+            print!("{:width$}", y, width = self.height.to_string().len());
+            print!("|");
             for x in 0..self.width {
                 let tile = &self.tiles[y as usize][x as usize];
                 if tile.is_revealed {
                     if tile.is_mine {
-                        print!("* ");
+                        print!("*");
                     } else {
-                        print!("{} ", tile.adjacent_mines);
+                        print!("{}", tile.adjacent_mines);
                     }
                 } else if tile.is_flagged {
-                    print!("F ");
+                    print!("F");
                 } else {
-                    print!(". ");
+                    print!(".");
+                }
+
+                // print the spaces betweem based on the number of digits in the next number
+                let next_x = (x + 1).to_string().len();
+
+                for _ in 0..next_x {
+                    print!(" ");
                 }
             }
             println!();
