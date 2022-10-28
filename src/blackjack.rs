@@ -98,93 +98,125 @@ fn print_scores(player_score: u8, dealer_exposed_card: Card) {
 }
 
 pub(crate) fn play() {
-  println!("Welcome to blackjack!");
-  println!("Starting game...");
-  let mut deck = Deck::new();
-  deck.shuffle();
-  println!("Shuffled deck. Drawing cards...");
+    println!("Welcome to blackjack!");
+    println!("Starting game...");
+    let mut deck = Deck::new();
+    deck.shuffle();
+    println!("Shuffled deck. Drawing cards...");
 
-  let mut player_hand = Vec::new();
-  let mut dealer_hand = Vec::new();
+    let mut player_hand = Vec::new();
+    let mut dealer_hand = Vec::new();
 
-  player_hand.push(deck.draw());
-  dealer_hand.push(deck.draw());
-  player_hand.push(deck.draw());
-  dealer_hand.push(deck.draw());
+    player_hand.push(deck.draw());
+    dealer_hand.push(deck.draw());
+    player_hand.push(deck.draw());
+    dealer_hand.push(deck.draw());
 
-  println!("Player hand:");
-  for card in &player_hand {
-      card.print();
-  }
-  println!();
-
-  println!(r#"Dealer hand:"#);
-  &dealer_hand[0].print();
-  println!("Hidden card");
-  println!();
-
-  let mut player_score = 0;
-  let mut dealer_score = 0;
-
-  for card in &player_hand {
-    if (card.value == "Ace") {
-      if (player_score + 11 > 21) {
-        player_score += 1;
-      } else {
-        player_score += 11;
-      }
-    } else {
-      player_score += card.get_value();
+    println!("Player hand:");
+    for card in &player_hand {
+        card.print();
     }
-  }
-
-  for card in &dealer_hand {
-    if (card.value == "Ace") {
-      if (dealer_score + 11 > 21) {
-        dealer_score += 1;
-      } else {
-        dealer_score += 11;
-      }
-    } else {
-      dealer_score += card.get_value();
-    }
-  }
-
-  // allow player to hit
-  while true {
-    print_scores(player_score, dealer_hand[0].clone());
     println!();
-    println!("Hit or stand? (h/s)");
-    let mut input = String::new();
-    std::io::stdin().read_line(&mut input).unwrap();
-    let input = input.trim();
 
-    if (input == "h") {
-      let new_card = deck.draw();
-      new_card.print();
-      if (new_card.value == "Ace") {
-        if (player_score + 11 > 21) {
-          player_score += 1;
+    println!(r#"Dealer hand:"#);
+    &dealer_hand[0].print();
+    println!("Hidden card");
+    println!();
+
+    let mut player_score = 0;
+    let mut dealer_score = 0;
+
+    for card in &player_hand {
+        if (card.value == "Ace") {
+            if (player_score + 11 > 21) {
+                player_score += 1;
+            } else {
+                player_score += 11;
+            }
         } else {
-          player_score += 11;
+            player_score += card.get_value();
         }
-      } else {
-        player_score += new_card.get_value();
-      }
+    }
 
-      player_hand.push(new_card);
-    } else if (input == "s") {
-      break;
+    for card in &dealer_hand {
+        if card.value == "Ace" {
+            if dealer_score + 11 > 21 {
+                dealer_score += 1;
+            } else {
+                dealer_score += 11;
+            }
+        } else {
+            dealer_score += card.get_value();
+        }
+    }
+
+    // allow player to hit
+    loop {
+        print_scores(player_score, dealer_hand[0].clone());
+        println!();
+        println!("Hit or stand? (h/s)");
+        let mut input = String::new();
+        std::io::stdin().read_line(&mut input).unwrap();
+        let input = input.trim();
+
+        if input == "h" {
+            let new_card = deck.draw();
+            new_card.print();
+            if new_card.value == "Ace" {
+                if player_score + 11 > 21 {
+                    player_score += 1;
+                } else {
+                    player_score += 11;
+                }
+            } else {
+                player_score += new_card.get_value();
+            }
+
+            player_hand.push(new_card);
+        } else if input == "s" {
+            break;
+        } else {
+            println!("Invalid input");
+        }
+
+        if player_score > 21 {
+            println!("Player score: {}", player_score);
+            println!("Player busts");
+
+            println!("Play again? (y/n)");
+            let mut input = String::new();
+            std::io::stdin().read_line(&mut input).unwrap();
+            let input = input.trim();
+            if input == "y" {
+                play();
+            } else {
+                break;
+            }
+        }
+    }
+
+    if player_score == 21 {
+        println!("Player score: {}", player_score);
+        println!("Player wins");
+        deck.return_cards(player_hand);
+        deck.return_cards(dealer_hand);
+
+        println!("Play again? (y/n)");
+        let mut input = String::new();
+        std::io::stdin().read_line(&mut input).unwrap();
+        let input = input.trim();
+        if input == "y" {
+            play();
+        } else {
+            return;
+        }
     } else {
-      println!("Invalid input");
+        println!("Player score: {}", player_score);
+        println!("Dealer score: {}", dealer_score);
+        println!("Dealer hand:");
+        for card in &dealer_hand {
+            card.print();
+        }
+        println!();
     }
-
-    if (player_score > 21) {
-      println!("Player score: {}", player_score);
-      println!("Player busts");
-      deck.return_cards(player_hand);
-      deck.return_cards(dealer_hand);
-      return;
-    }
-  }
 }
