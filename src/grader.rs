@@ -10,9 +10,9 @@ struct GradeItem {
 impl GradeItem {
     fn new(name: String, score: u32, total: u32) -> GradeItem {
         GradeItem {
-            name: name,
-            score: score,
-            total: total,
+            name,
+            score,
+            total,
         }
     }
 }
@@ -28,8 +28,8 @@ struct GradeCategory {
 impl GradeCategory {
     fn new(name: String, weight: f32) -> GradeCategory {
         GradeCategory {
-            name: name,
-            weight: weight,
+            name,
+            weight,
             grade: 0.0,
             grade_items: Vec::new(),
         }
@@ -101,8 +101,13 @@ impl Grade {
     }
 
     fn save(&self, filename: &str) {
-        let json = serde_json::to_string(&self).unwrap();
-        std::fs::write(filename, json).unwrap();
+        let json = serde_json::to_string(&self).unwrap_or_else(|_| {
+            println!("Failed to serialize grade");
+            return;
+        });
+        std::fs::write(filename, json).unwrap_or_else(|_| {
+            println!("Failed to write to file");
+        });
     }
 
     fn load(filename: &str) -> Grade {
@@ -167,7 +172,10 @@ pub fn grader() {
             4 => {
                 println!("Please enter the filename of the grade file you would like to save:");
                 let mut filename = String::new();
-                std::io::stdin().read_line(&mut filename).unwrap();
+                std::io::stdin().read_line(&mut filename).unwrap_or_else(|err| {
+                    println!("Error: {}", err);
+                    0
+                });
                 let filename = filename.trim();
                 grade.save(filename);
             }
