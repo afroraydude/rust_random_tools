@@ -127,27 +127,11 @@ pub(crate) fn play() {
     let mut dealer_score = 0;
 
     for card in &player_hand {
-        if (card.value == "Ace") {
-            if (player_score + 11 > 21) {
-                player_score += 1;
-            } else {
-                player_score += 11;
-            }
-        } else {
-            player_score += card.get_value();
-        }
+        check_ace(&mut player_score, card);
     }
 
     for card in &dealer_hand {
-        if card.value == "Ace" {
-            if dealer_score + 11 > 21 {
-                dealer_score += 1;
-            } else {
-                dealer_score += 11;
-            }
-        } else {
-            dealer_score += card.get_value();
-        }
+        check_ace(&mut dealer_score, card);
     }
 
     // allow player to hit
@@ -162,15 +146,7 @@ pub(crate) fn play() {
         if input == "h" {
             let new_card = deck.draw();
             new_card.print();
-            if new_card.value == "Ace" {
-                if player_score + 11 > 21 {
-                    player_score += 1;
-                } else {
-                    player_score += 11;
-                }
-            } else {
-                player_score += new_card.get_value();
-            }
+            check_ace(&mut player_score, &new_card);
 
             player_hand.push(new_card);
         } else if input == "s" {
@@ -219,4 +195,19 @@ pub(crate) fn play() {
         }
         println!();
     }
+}
+
+fn check_ace(player_score: &mut u8, new_card: &Card) {
+    let mut new_score = player_score.clone();
+    if new_card.value == "Ace" {
+        if new_score + 11 > 21 {
+            new_score += 1 as u8;
+        } else {
+            new_score += 11 as u8;
+        }
+    } else {
+        new_score += new_card.get_value();
+    }
+
+    player_score.clone_from(&new_score);
 }

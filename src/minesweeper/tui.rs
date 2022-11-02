@@ -37,7 +37,7 @@ pub fn play() {
         let x: usize = input.next().unwrap().parse().unwrap();
         let y: usize = input.next().unwrap().parse().unwrap();
 
-        if (x >= width || y >= height) {
+        if x >= width || y >= height {
             println!("Invalid coordinates");
             continue;
         }
