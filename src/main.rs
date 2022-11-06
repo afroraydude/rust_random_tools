@@ -1,10 +1,10 @@
 use std::io;
 
-mod random;
-mod minesweeper;
 mod blackjack;
 mod fib;
 mod grader;
+mod minesweeper;
+mod random;
 
 fn main() {
     println!("Tools: ");
@@ -13,10 +13,12 @@ fn main() {
     println!("3. Minesweeper");
     println!("4. Blackjack");
     println!("5. Grade Calculator");
-
+    println!("6. Magic 8 Ball");
 
     let mut input = String::new();
-    io::stdin().read_line(&mut input).expect("Failed to read line");
+    io::stdin()
+        .read_line(&mut input)
+        .expect("Failed to read line");
     let input = input.trim();
     // convert to int
     let input: i32 = input.parse().unwrap_or_else(|_| {
@@ -30,6 +32,7 @@ fn main() {
         3 => minesweeper::play_game(),
         4 => blackjack::play(),
         5 => grader::grader(),
+        6 => random::magic_ball(),
         _ => println!("Invalid input"),
     }
 }

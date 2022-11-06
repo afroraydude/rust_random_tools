@@ -1,4 +1,4 @@
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug)]
 struct GradeItem {
@@ -9,11 +9,7 @@ struct GradeItem {
 
 impl GradeItem {
     fn new(name: String, score: u32, total: u32) -> GradeItem {
-        GradeItem {
-            name,
-            score,
-            total,
-        }
+        GradeItem { name, score, total }
     }
 }
 
@@ -119,12 +115,14 @@ impl Grade {
 pub fn grader() {
     println!("Welcome to the grade calculator!");
     /*
-    Menu: 
+    Menu:
     1. Load grade file
     2. Create new grade file
     */
 
-    println!("Please choose an option from the menu:\n1. Load grade file\n2. Create new grade file\n");
+    println!(
+        "Please choose an option from the menu:\n1. Load grade file\n2. Create new grade file\n"
+    );
     let mut option = String::new();
     std::io::stdin().read_line(&mut option).unwrap();
     let option: u32 = option.trim().parse().unwrap();
@@ -138,14 +136,14 @@ pub fn grader() {
             std::io::stdin().read_line(&mut filename).unwrap();
             let filename = filename.trim();
             grade = Grade::load(filename);
-        },
+        }
         2 => {
             println!("Please enter the name of the grade file you would like to create:");
             let mut filename = String::new();
             std::io::stdin().read_line(&mut filename).unwrap();
             let filename = filename.trim();
             grade = Grade::new(String::from(filename));
-        },
+        }
         _ => {
             println!("Invalid option. Exiting...");
             return;
@@ -172,10 +170,12 @@ pub fn grader() {
             4 => {
                 println!("Please enter the filename of the grade file you would like to save:");
                 let mut filename = String::new();
-                std::io::stdin().read_line(&mut filename).unwrap_or_else(|err| {
-                    println!("Error: {}", err);
-                    0
-                });
+                std::io::stdin()
+                    .read_line(&mut filename)
+                    .unwrap_or_else(|err| {
+                        println!("Error: {}", err);
+                        0
+                    });
                 let filename = filename.trim();
                 grade.save(filename);
             }
@@ -225,7 +225,11 @@ fn add_grade_item(grade: &mut Grade) {
     std::io::stdin().read_line(&mut grade_item_total).unwrap();
     let grade_item_total: u32 = grade_item_total.trim().parse().unwrap();
 
-    let grade_item = GradeItem::new(String::from(grade_item_name), grade_item_score, grade_item_total);
+    let grade_item = GradeItem::new(
+        String::from(grade_item_name),
+        grade_item_score,
+        grade_item_total,
+    );
     grade.categories[category_index.unwrap()].add_grade_item(grade_item);
     println!("Grade item added successfully!");
 }

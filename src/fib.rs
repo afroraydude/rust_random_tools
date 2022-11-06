@@ -15,7 +15,9 @@ pub fn fib() {
     // ask how long the sequence should be
     println!("How long should the sequence be?");
     let mut input = String::new();
-    io::stdin().read_line(&mut input).expect("Failed to read line");
+    io::stdin()
+        .read_line(&mut input)
+        .expect("Failed to read line");
     let input = input.trim();
     // convert to int
     let input: u32 = input.parse().unwrap_or_else(|_| {

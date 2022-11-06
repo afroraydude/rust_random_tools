@@ -1,7 +1,5 @@
+use super::objs::{Board, Tile};
 use std::io;
-use super::objs::{Tile, Board};
-
-
 
 pub fn play() {
     println!("Welcome to Minesweeper!");
