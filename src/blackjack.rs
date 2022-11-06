@@ -137,7 +137,7 @@ pub(crate) fn play() {
     // allow player to hit
     loop {
         print_scores(player_score, dealer_hand[0].clone());
-        println!();
+        println!("\n");
         println!("Hit or stand? (h/s)");
         let mut input = String::new();
         std::io::stdin().read_line(&mut input).unwrap();
@@ -193,7 +193,16 @@ pub(crate) fn play() {
         for card in &dealer_hand {
             card.print();
         }
-        println!();
+
+        if player_score > dealer_score {
+            println!("Player wins!");
+        } else if dealer_score > player_score {
+            println!("Dealer wins!");
+        } else {
+            println!("Draw!");
+        }
+
+        println!("\n");
     }
 }
 
