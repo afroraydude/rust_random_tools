@@ -103,7 +103,7 @@ impl Grade {
     fn save(&self, filename: &str) {
         let json = serde_json::to_string(&self).unwrap_or_else(|_| {
             println!("Failed to serialize grade");
-            return;
+            return String::new();
         });
         std::fs::write(filename, json).unwrap_or_else(|_| {
             println!("Failed to write to file");
